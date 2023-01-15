@@ -2,9 +2,9 @@
 // http://localhost:3000/counter
 
 import * as React from 'react'
-import {act} from 'react-dom/test-utils'
-import {createRoot} from 'react-dom/client'
-import {render, fireEvent, screen} from '@testing-library/react'
+// import {act} from 'react-dom/test-utils'
+// import {createRoot} from 'react-dom/client'
+import {render, fireEvent} from '@testing-library/react'
 // 🐨 import the `render` and `fireEvent` utilities from '@testing-library/react'
 import Counter from '../../components/counter'
 
@@ -39,7 +39,7 @@ test('counter increments and decrements when the buttons are clicked', () => {
   const [decrement, increment] = container.querySelectorAll('button')
   const message = container.firstChild.querySelector('div')
 
-  expect(message.textContent).toBe('Current count: 0')
+  expect(message).toHaveTextContent('Current count: 0')
 
   // 🐨 replace the next two statements with `fireEvent.click(button)`
   // 💰 note that you can remove `act` completely!
@@ -49,12 +49,12 @@ test('counter increments and decrements when the buttons are clicked', () => {
   //   button: 0,
   // })
   fireEvent.click(increment)
-  expect(message.textContent).toBe('Current count: 1')
+  expect(message).toHaveTextContent('Current count: 1')
   // const decrementClickEvent = new MouseEvent('click', {
   //   bubbles: true,
   //   cancelable: true,
   //   button: 0,
   // })
   fireEvent.click(decrement)
-  expect(message.textContent).toBe('Current count: 0')
+  expect(message).toHaveTextContent('Current count: 0')
 })
