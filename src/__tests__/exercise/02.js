@@ -21,8 +21,6 @@ global.IS_REACT_ACT_ENVIRONMENT = true
 
 test('counter increments and decrements when the buttons are clicked', () => {
   // 💣 remove these two lines, React Testing Library will create the div for you
-  // const div = document.createElement('div')
-  // document.body.append(div)
 
   // 🐨 swap createRoot and root.render with React Testing Library's render
   // Note that React Testing Library's render doesn't need you to pass a `div`
@@ -30,8 +28,6 @@ test('counter increments and decrements when the buttons are clicked', () => {
   // bunch of utilities on it. For now, let's just grab `container` which is
   // the div that React Testing Library creates for us.
   // 💰 const {container} = render(<Counter />)
-  // const root = createRoot(div)
-  // act(() => root.render(<Counter />))
   const {container} = render(<Counter />)
 
   // 🐨 instead of `div` here you'll want to use the `container` you get back
@@ -43,18 +39,9 @@ test('counter increments and decrements when the buttons are clicked', () => {
 
   // 🐨 replace the next two statements with `fireEvent.click(button)`
   // 💰 note that you can remove `act` completely!
-  // const incrementClickEvent = new MouseEvent('click', {
-  //   bubbles: true,
-  //   cancelable: true,
-  //   button: 0,
-  // })
   fireEvent.click(increment)
   expect(message).toHaveTextContent('Current count: 1')
-  // const decrementClickEvent = new MouseEvent('click', {
-  //   bubbles: true,
-  //   cancelable: true,
-  //   button: 0,
-  // })
+
   fireEvent.click(decrement)
   expect(message).toHaveTextContent('Current count: 0')
 })
