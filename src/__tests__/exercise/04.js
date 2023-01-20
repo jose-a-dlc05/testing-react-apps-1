@@ -3,8 +3,16 @@
 
 import * as React from 'react'
 import {render, screen} from '@testing-library/react'
+import faker from 'faker'
 import userEvent from '@testing-library/user-event'
 import Login from '../../components/login'
+
+const buildLoginForm = () => {
+  return {
+    randUserName: faker.internet.userName(),
+    randPassword: faker.internet.password(),
+  }
+}
 
 test('submitting the form calls onSubmit with username and password', async () => {
   // 🐨 create a variable called "submittedData" and a handleSubmit function that
@@ -25,17 +33,19 @@ test('submitting the form calls onSubmit with username and password', async () =
   const handleSubmit = jest.fn()
 
   render(<Login onSubmit={handleSubmit} />)
+  const {randUserName, randPassword} = buildLoginForm()
+
   const username = screen.getByLabelText(/username/i)
   const password = screen.getByLabelText(/password/i)
-  const submitBtn = screen.getByRole('button', {type: 'Submit'})
+  const submitBtn = screen.getByRole('button', {name: /submit/i})
 
-  await userEvent.type(username, 'jose-a-dlc05')
-  await userEvent.type(password, 'password')
+  await userEvent.type(username, randUserName)
+  await userEvent.type(password, randPassword)
   await userEvent.click(submitBtn)
 
   expect(handleSubmit).toHaveBeenCalledWith({
-    username: 'jose-a-dlc05',
-    password: 'password',
+    username: randUserName,
+    password: randPassword,
   })
   expect(handleSubmit).toHaveBeenCalledTimes(1)
 })
