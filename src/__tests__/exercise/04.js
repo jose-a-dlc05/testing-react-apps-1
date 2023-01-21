@@ -3,17 +3,16 @@
 
 import * as React from 'react'
 import {render, screen} from '@testing-library/react'
-import faker from 'faker'
+import {build, fake} from '@jackfranklin/test-data-bot'
 import userEvent from '@testing-library/user-event'
 import Login from '../../components/login'
 
-const buildLoginForm = overrides => {
-  return {
-    username: faker.internet.userName(),
-    password: faker.internet.password(),
-    ...overrides,
-  }
-}
+const buildLoginForm = build('User', {
+  fields: {
+    username: fake(f => f.name.findName()),
+    password: fake(f => f.random.word()),
+  },
+})
 
 test('submitting the form calls onSubmit with username and password', async () => {
   // 🐨 create a variable called "submittedData" and a handleSubmit function that
@@ -34,7 +33,6 @@ test('submitting the form calls onSubmit with username and password', async () =
   const handleSubmit = jest.fn()
   render(<Login onSubmit={handleSubmit} />)
   const {username, password} = buildLoginForm()
-
   await userEvent.type(screen.getByLabelText(/username/i), username)
   await userEvent.type(screen.getByLabelText(/password/i), password)
   await userEvent.click(screen.getByRole('button', {name: /submit/i}))
