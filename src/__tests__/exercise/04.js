@@ -7,10 +7,11 @@ import faker from 'faker'
 import userEvent from '@testing-library/user-event'
 import Login from '../../components/login'
 
-const buildLoginForm = () => {
+const buildLoginForm = overrides => {
   return {
-    randUserName: faker.internet.userName(),
-    randPassword: faker.internet.password(),
+    username: faker.internet.userName(),
+    password: faker.internet.password(),
+    ...overrides,
   }
 }
 
@@ -31,21 +32,16 @@ test('submitting the form calls onSubmit with username and password', async () =
   // assert that submittedData is correct
   // 💰 use `toEqual` from Jest: 📜 https://jestjs.io/docs/en/expect#toequalvalue
   const handleSubmit = jest.fn()
-
   render(<Login onSubmit={handleSubmit} />)
-  const {randUserName, randPassword} = buildLoginForm()
+  const {username, password} = buildLoginForm()
 
-  const username = screen.getByLabelText(/username/i)
-  const password = screen.getByLabelText(/password/i)
-  const submitBtn = screen.getByRole('button', {name: /submit/i})
-
-  await userEvent.type(username, randUserName)
-  await userEvent.type(password, randPassword)
-  await userEvent.click(submitBtn)
+  await userEvent.type(screen.getByLabelText(/username/i), username)
+  await userEvent.type(screen.getByLabelText(/password/i), password)
+  await userEvent.click(screen.getByRole('button', {name: /submit/i}))
 
   expect(handleSubmit).toHaveBeenCalledWith({
-    username: randUserName,
-    password: randPassword,
+    username,
+    password,
   })
   expect(handleSubmit).toHaveBeenCalledTimes(1)
 })
