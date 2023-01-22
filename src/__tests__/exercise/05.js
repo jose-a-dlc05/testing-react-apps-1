@@ -61,7 +61,15 @@ test(`not entering username displays error message`, async () => {
   await userEvent.click(screen.getByRole('button', {name: /submit/i}))
   await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
 
-  expect(screen.getByText(/username required/i)).toBeInTheDocument()
+  const errorMsg = screen.getByRole('alert')
+  expect(errorMsg).toMatchInlineSnapshot(`
+    <div
+      role="alert"
+      style="color: red;"
+    >
+      username required
+    </div>
+  `)
 })
 test(`not entering password displays error message`, async () => {
   render(<Login />)
@@ -71,5 +79,14 @@ test(`not entering password displays error message`, async () => {
   await userEvent.click(screen.getByRole('button', {name: /submit/i}))
   await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
 
-  expect(screen.getByText(/password required/i)).toBeInTheDocument()
+  const errorMsg = screen.getByRole('alert')
+
+  expect(errorMsg).toMatchInlineSnapshot(`
+    <div
+      role="alert"
+      style="color: red;"
+    >
+      password required
+    </div>
+  `)
 })
