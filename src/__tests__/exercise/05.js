@@ -9,6 +9,7 @@ import {build, fake} from '@jackfranklin/test-data-bot'
 // 🐨 you'll need to import rest from 'msw' and setupServer from msw/node
 import Login from '../../components/login-submission'
 import {setupServer} from 'msw/node'
+import {rest} from 'msw'
 import {handlers} from '../../test/server-handlers'
 
 const buildLoginForm = build({
@@ -32,6 +33,7 @@ const buildLoginForm = build({
 const server = setupServer(...handlers)
 
 beforeAll(() => server.listen())
+afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 test(`logging in displays the user's username`, async () => {
@@ -89,4 +91,30 @@ test(`not entering password displays error message`, async () => {
       password required
     </div>
   `)
+})
+
+test('handles server error', async () => {
+  const testErrorMsg = 'Error 500: server unavailable'
+  server.use(
+    rest.post(
+      // note that it's the same URL as our app-wide handler
+      // so this will override the other.
+      'https://auth-provider.example.com/api/login',
+      async (req, res, ctx) => {
+        // your one-off handler here
+        return res(ctx.status(500), ctx.json({message: testErrorMsg}))
+      },
+    ),
+  )
+
+  render(<Login />)
+  const {username, password} = buildLoginForm()
+  await userEvent.type(screen.getByLabelText(/username/i), username)
+  await userEvent.type(screen.getByLabelText(/password/i), password)
+  await userEvent.click(screen.getByRole('button', {name: /submit/i}))
+  await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
+
+  const errorMsg = screen.getByRole('alert')
+
+  expect(errorMsg).toHaveTextContent('Error 500: server unavailable')
 })
