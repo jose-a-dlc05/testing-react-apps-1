@@ -62,7 +62,6 @@ test('displays the error message', async () => {
   useCurrentPosition.mockImplementation(useMockCurrentPosition)
   render(<Location />)
   expect(screen.getByLabelText(/loading/i)).toBeInTheDocument()
-  screen.debug()
 
   act(() => {
     setErrorValue([fakeError])
